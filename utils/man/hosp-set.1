@@ -1,0 +1,58 @@
+.TH "hosp-set" "1" "2018-05-22" "hosp" "ODROID Smart Power Utilities"
+.SH "NAME"
+.LP
+hosp\-set \- set an ODROID Smart Power ON/OFF and START/STOP status
+.SH "SYNPOSIS"
+.LP
+\fBhosp\-set\fP
+\fIOPTION\fP
+[\fIOPTION\fP]...
+.SH "DESCRIPTION"
+.LP
+Put an ODROID Smart Power into the desired ON/OFF and START/STOP state.
+.LP
+ON/OFF controls whether power is provided to the system attached to the device.
+Turning on from an off state starts the power flow, but the meters are not started.
+.LP
+START/STOP controls the current, power, and energy meters.
+Starting from a stopped state starts the meters.
+Stopping from a started state pauses the energy meter, but the current and power meters continue running.
+Starting from a paused state resets the energy meter.
+.LP
+Requesting to start the device meters while in an off state has no effect.
+.SH "OPTIONS"
+.LP
+.TP
+\fB\-h\fP, \fB\-\-help\fP
+Prints the help screen.
+.TP
+\fB\-o\fP, \fB\-\-onoff=0|1\fP
+Turn the device ON (1) or OFF (0)
+.TP
+\fB\-s\fP, \fB\-\-startstop=0|1\fP
+START (1) or STOP (0) the device meters
+.SH "EXAMPLES"
+.TP
+\fBhosp\-set \-o 1\fP
+Turn the device on if not already turned on.
+.TP
+\fBhosp\-set \-o 0\fP
+Turn the device off if not already turned off.
+.TP
+\fBhosp\-set \-s 1\fP
+Start the device meters if not already started.
+.TP
+\fBhosp\-set \-s 0\fP
+Stop the device meters if not already stopped.
+.TP
+\fBhosp\-set \-o 1 \-s 1\fP
+Turn the device on if not already on and start the meters if not already started.
+.TP
+\fBhosp\-set \-o 1 \-s 0\fP
+Turn the device on if not already on and stop/pause the meters if already started.
+.SH "BUGS"
+.LP
+Report bugs upstream at <https://github.com/energymon/hosp>
+.SH "SEE ALSO"
+.LP
+\fBhosp\-get\fP(1), \fBhosp\-poll\fP(1)

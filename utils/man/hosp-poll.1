@@ -1,0 +1,47 @@
+.TH "hosp-poll" "1" "2018-05-22" "hosp" "ODROID Smart Power Utilities"
+.SH "NAME"
+.LP
+hosp\-poll \- poll an ODROID Smart Power at regular intervals
+.SH "SYNPOSIS"
+.LP
+\fBhosp\-poll\fP
+[\fIOPTION\fP]...
+.SH "DESCRIPTION"
+.LP
+Poll an ODROID Smart Power at regular intervals and print the results in CSV format.
+.SH "OPTIONS"
+.LP
+.TP
+\fB\-h\fP, \fB\-\-help\fP
+Prints the help screen.
+.TP
+\fB\-r\fP, \fB\-\-restart\fP
+Restart the Watt-hour counter before polling
+.TP
+\fB\-c\fP, \fB\-\-count\fP=\fIN\fP
+Stop after \fIN\fP reads.
+.TP
+\fB\-c\fP, \fB\-\-count\fP=\fIMS\fP
+The polling interval in milliseconds (default=100).
+.SH "EXAMPLES"
+.TP
+\fBhosp\-poll\fP
+Poll the device at 100 ms intervals.
+.TP
+\fBhosp\-poll \-r\fP
+Restart the Watt-hour counter before polling at 100 ms intervals.
+.TP
+\fBhosp\-poll \-c 10\fP
+Poll 10 times, then stop.
+.TP
+\fBhosp\-poll \-i 500\fP
+Poll the device at 500 ms intervals.
+.TP
+\fBhosp\-poll \-r \-c 40 \-i 250\fP
+Restart the Watt-hour counter, then poll 40 times at 250 ms intervals.
+.SH "BUGS"
+.LP
+Report bugs upstream at <https://github.com/energymon/hosp>
+.SH "SEE ALSO"
+.LP
+\fBhosp\-get\fP(1), \fBhosp\-set\fP(1)
