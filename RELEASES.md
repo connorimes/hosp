@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - hosp_request_version_read: stringop-truncation warning with gcc >= 8.
+- hosp-{poll,set}: missing-noreturn warning for `print_usage` functions.
 - pkg-config: pc file is broken when CMAKE_INSTALL_{INCLUDE,LIB}DIR is absolute.
 
 
