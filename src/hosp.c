@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "hosp.h"
+#include <hosp.h>
 
 #define HOSP_BUF_SIZE            65
 #define HOSP_VENDOR_ID           0x04d8

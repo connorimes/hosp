@@ -1,23 +1,14 @@
-cmake_minimum_required(VERSION 2.8.5)
+cmake_minimum_required(VERSION 3.6)
 
-project(hosp)
-set(VERSION_MAJOR 0)
-set(VERSION_MINOR 1)
-set(VERSION_PATCH 0)
-set(PROJECT_VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH})
+project(hosp VERSION 0.2.0
+             LANGUAGES C)
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -std=c99")
+set(CMAKE_C_STANDARD 99)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+set(CMAKE_C_EXTENSIONS ON)
+add_compile_options(-Wall)
 
-include_directories(${PROJECT_SOURCE_DIR}/inc)
-
-if(CMAKE_HOST_UNIX)
-  include(GNUInstallDirs)
-else()
-  set(CMAKE_INSTALL_LIBDIR lib)
-  set(CMAKE_INSTALL_INCLUDEDIR include)
-  set(CMAKE_INSTALL_BINDIR bin)
-  set(CMAKE_INSTALL_MANDIR share/man)
-endif()
+include(GNUInstallDirs)
 
 
 # Dependencies
@@ -26,38 +17,43 @@ find_package(PkgConfig REQUIRED)
 # Check for impl with libusb backend first
 # hidapi docs only specify it for Linux and FreeBSD, but libusb is quite portable
 set(HIDAPI_IMPL hidapi-libusb)
-pkg_search_module(HIDAPI ${HIDAPI_IMPL})
+pkg_search_module(HIDAPI IMPORTED_TARGET ${HIDAPI_IMPL})
 if(NOT HIDAPI_FOUND)
   # Now look for more platform-specific implementations
   if(${CMAKE_SYSTEM_NAME} MATCHES "Linux|Android")
     # Check for impl with hidraw backend
     set(HIDAPI_IMPL hidapi-hidraw)
-    pkg_search_module(HIDAPI ${HIDAPI_IMPL})
+    pkg_search_module(HIDAPI IMPORTED_TARGET ${HIDAPI_IMPL})
   elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     # Check for impl with IOHidManager backend
     set(HIDAPI_IMPL hidapi)
-    pkg_search_module(HIDAPI ${HIDAPI_IMPL})
+    pkg_search_module(HIDAPI IMPORTED_TARGET ${HIDAPI_IMPL})
   elseif(WIN32)
     # Check for impl with dll backend (hidapi.dll)
     set(HIDAPI_IMPL hidapi)
-    pkg_search_module(HIDAPI ${HIDAPI_IMPL})
+    pkg_search_module(HIDAPI IMPORTED_TARGET ${HIDAPI_IMPL})
   endif()
 endif()
 if(NOT HIDAPI_FOUND)
   message(FATAL_ERROR "Could not find dependency: hidapi")
 endif()
 
-include_directories(${HIDAPI_INCLUDE_DIRS})
-
 
 # Libraries
 
-add_library(${PROJECT_NAME} src/hosp.c)
-target_link_libraries(${PROJECT_NAME} -L${HIDAPI_LIBDIR} ${HIDAPI_LIBRARIES})
+add_library(hosp src/hosp.c)
+target_include_directories(hosp PRIVATE ${PROJECT_SOURCE_DIR}/inc
+                                PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/inc>
+                                       $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/hosp>)
+set_target_properties(hosp PROPERTIES PUBLIC_HEADER "${PROJECT_SOURCE_DIR}/inc/hosp.h")
+target_link_libraries(hosp PRIVATE PkgConfig::HIDAPI)
 if(BUILD_SHARED_LIBS)
-  set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${PROJECT_VERSION}
-                                                   SOVERSION ${VERSION_MAJOR})
+  set_target_properties(hosp PROPERTIES VERSION ${PROJECT_VERSION}
+                                        SOVERSION ${PROJECT_VERSION_MAJOR})
 endif()
+install(TARGETS hosp LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+                     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+                     PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/hosp)
 
 
 # Utilities
@@ -69,24 +65,17 @@ add_subdirectory(utils)
 
 set(PKG_CONFIG_EXEC_PREFIX "\${prefix}")
 set(PKG_CONFIG_LIBDIR "\${prefix}/${CMAKE_INSTALL_LIBDIR}")
-set(PKG_CONFIG_INCLUDEDIR "\${prefix}/${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}")
+set(PKG_CONFIG_INCLUDEDIR "\${prefix}/${CMAKE_INSTALL_INCLUDEDIR}/hosp")
 set(PKG_CONFIG_CFLAGS "-I\${includedir}")
-
-set(PKG_CONFIG_NAME "${PROJECT_NAME}")
+set(PKG_CONFIG_NAME "hosp")
 set(PKG_CONFIG_DESCRIPTION "Library for managing an ODROID Smart Power")
-set(PKG_CONFIG_LIBS "-L\${libdir} -l${PROJECT_NAME}")
+set(PKG_CONFIG_LIBS "-L\${libdir} -lhosp")
 set(PKG_CONFIG_REQUIRES_PRIVATE "${HIDAPI_IMPL}")
 configure_file(
   ${CMAKE_CURRENT_SOURCE_DIR}/pkgconfig.in
-  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc
+  ${CMAKE_CURRENT_BINARY_DIR}/hosp.pc
 )
-
-
-# Install
-
-install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_LIBDIR})
-install(FILES inc/hosp.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME})
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/hosp.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
 
 
 # Uninstall

@@ -4,13 +4,12 @@
  * @author Connor Imes
  * @date 2018-05-22
  */
-#define _BSD_SOURCE
 #include <errno.h>
 #include <getopt.h>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "hosp.h"
+#include <hosp.h>
 #include "util.h"
 
 #define HOSP_DEFAULT_INTERVAL_MS 100

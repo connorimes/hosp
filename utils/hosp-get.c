@@ -7,7 +7,7 @@
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "hosp.h"
+#include <hosp.h>
 #include "util.h"
 
 int main(void) {

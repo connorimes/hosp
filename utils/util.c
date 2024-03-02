@@ -4,14 +4,13 @@
  * @author Connor Imes
  * @date 2018-05-22
  */
-#define _BSD_SOURCE
 #include <errno.h>
 #if defined(_WIN32)
 #include <windows.h>
 #else
 #include <unistd.h>
 #endif
-#include "hosp.h"
+#include <hosp.h>
 #include "util.h"
 
 int hosp_util_msleep(unsigned long ms) {

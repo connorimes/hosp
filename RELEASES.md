@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- CMake: Increase minimum required version to 3.6.
 - README: update URLs.
 
 

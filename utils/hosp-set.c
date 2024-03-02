@@ -8,7 +8,7 @@
 #include <getopt.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "hosp.h"
+#include <hosp.h>
 #include "util.h"
 
 // -1 if unset, 0 for OFF/STOP, 1 for ON/START
