@@ -15,7 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- pkg-config: pc file is broken when CMAKE_INSTALL_{INCLUDE,LIB}DIR is absolute
+- hosp_request_version_read: stringop-truncation warning with gcc >= 8.
+- pkg-config: pc file is broken when CMAKE_INSTALL_{INCLUDE,LIB}DIR is absolute.
 
 
 ## v0.1.0 - 2018-05-31

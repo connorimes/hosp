@@ -109,11 +109,13 @@ int hosp_request_version_write(hosp_device* hosp) {
 
 int hosp_request_version_read(hosp_device* hosp, char* buf, size_t bufsize) {
   size_t bytes;
+  char* ptr;
   int ret;
   if (!(ret = hosp_read(hosp, HOSP_REQUEST_VERSION))) {
     bytes = bufsize < 17 ? bufsize - 1 : 16;
-    strncpy(buf, (char*) &hosp->buf[1], bytes);
-    buf[bytes] = '\0';
+    // strncpy can get a stringop-truncation warning here, so use stpncpy
+    ptr = stpncpy(buf, (char*) &hosp->buf[1], bytes);
+    *ptr = '\0';
   }
   return ret;
 }
