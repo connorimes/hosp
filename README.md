@@ -7,13 +7,21 @@ A library and tools for managing an [ODROID Smart Power](https://wiki.odroid.com
 
 You need an ODROID Smart Power device with a USB connection.
 
-You will also need the [hidapi](https://github.com/libusb/hidapi) library.
-On Ubuntu 14.04 LTS and newer, just install `libhidapi-dev`.
+You will also need [CMake](https://cmake.org/) and a [hidapi](https://github.com/libusb/hidapi) library.
+On Debian-based Linux systems (including Ubuntu):
+
+```sh
+sudo apt install cmake libhidapi-dev
+```
+
+On macOS:
+
+```sh
+brew install cmake hidapi
+```
 
 
 ## Building
-
-This project uses CMake.
 
 To build, run:
 
@@ -21,8 +29,10 @@ To build, run:
 mkdir _build
 cd _build
 cmake ..
-make
+cmake --build .
 ```
+
+To build a shared object library (instead of a static library), add `-DBUILD_SHARED_LIBS=On` to the first cmake command.
 
 
 ## Installing
@@ -30,7 +40,7 @@ make
 To install, run with proper privileges:
 
 ```sh
-make install
+cmake --build . --target install
 ```
 
 On Linux, installation typically places libraries in `/usr/local/lib` and header files in `/usr/local/include/hosp`.
@@ -42,7 +52,7 @@ Install must be run before uninstalling in order to have a manifest.
 To uninstall, run with proper privileges:
 
 ```sh
-make uninstall
+cmake --build . --target uninstall
 ```
 
 
@@ -50,13 +60,15 @@ make uninstall
 
 To link with libhosp, get linker information (including transitive dependencies) with `pkg-config`:
 
-``` sh
+```sh
 pkg-config --libs --static hosp
 ```
 
+The `--static` flag is unnecessary if you built/installed a shared object library.
+
 You may also need additional compile flags, e.g., to get headers:
 
-``` sh
+```sh
 pkg-config --cflags hosp
 ```
 
@@ -68,7 +80,7 @@ To use an ODROID Smart Power without needing sudo/root at runtime, set appropria
 You can give access to a specific group, e.g. `plugdev`, by creating/modifying a `udev` config file like `/etc/udev/rules.d/10-local.rules`.
 Depending on whether you are using the `libusb` or `hidraw` implementations of `hidapi`, use one of the following rules (having both doesn't hurt):
 
-```sh
+```
 # ODROID Smart Power - HIDAPI/libusb
 SUBSYSTEM=="usb", ATTRS{idVendor}=="04d8", ATTRS{idProduct}=="003f", GROUP="plugdev"
 
