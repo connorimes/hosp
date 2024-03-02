@@ -1,13 +1,13 @@
 # Hardkernel ODROID Smart Power Library and Utilities
 
-A library and tools for managing an [ODROID Smart Power](http://www.hardkernel.com/main/products/prdt_info.php?g_code=G137361754360) device.
+A library and tools for managing an [ODROID Smart Power](https://wiki.odroid.com/old_product/accessory/odroidsmartpower) device.
 
 
 ## Prerequisites
 
 You need an ODROID Smart Power device with a USB connection.
 
-You will also need the [hidapi](https://github.com/signal11/hidapi/) library.
+You will also need the [hidapi](https://github.com/libusb/hidapi) library.
 On Ubuntu 14.04 LTS and newer, just install `libhidapi-dev`.
 
 
