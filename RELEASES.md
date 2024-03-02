@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CMake: Increase minimum required version to 3.6.
 - README: update URLs.
 
+### Fixed
+
+- pkg-config: pc file is broken when CMAKE_INSTALL_{INCLUDE,LIB}DIR is absolute
+
 
 ## v0.1.0 - 2018-05-31
 

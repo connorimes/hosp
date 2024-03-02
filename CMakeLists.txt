@@ -63,17 +63,29 @@ add_subdirectory(utils)
 
 # pkg-config
 
+set(PKG_CONFIG_PREFIX "${CMAKE_INSTALL_PREFIX}")
 set(PKG_CONFIG_EXEC_PREFIX "\${prefix}")
-set(PKG_CONFIG_LIBDIR "\${prefix}/${CMAKE_INSTALL_LIBDIR}")
-set(PKG_CONFIG_INCLUDEDIR "\${prefix}/${CMAKE_INSTALL_INCLUDEDIR}/hosp")
-set(PKG_CONFIG_CFLAGS "-I\${includedir}")
+if(IS_ABSOLUTE "${CMAKE_INSTALL_INCLUDEDIR}")
+  set(PKG_CONFIG_INCLUDEDIR "${CMAKE_INSTALL_INCLUDEDIR}/hosp")
+else()
+  set(PKG_CONFIG_INCLUDEDIR "\${prefix}/${CMAKE_INSTALL_INCLUDEDIR}/hosp")
+endif()
+if(IS_ABSOLUTE "${CMAKE_INSTALL_LIBDIR}")
+  set(PKG_CONFIG_LIBDIR "${CMAKE_INSTALL_LIBDIR}")
+else()
+  set(PKG_CONFIG_LIBDIR "\${exec_prefix}/${CMAKE_INSTALL_LIBDIR}")
+endif()
 set(PKG_CONFIG_NAME "hosp")
 set(PKG_CONFIG_DESCRIPTION "Library for managing an ODROID Smart Power")
-set(PKG_CONFIG_LIBS "-L\${libdir} -lhosp")
+set(PKG_CONFIG_REQUIRES "")
 set(PKG_CONFIG_REQUIRES_PRIVATE "${HIDAPI_IMPL}")
+set(PKG_CONFIG_CFLAGS "-I\${includedir}")
+set(PKG_CONFIG_LIBS "-L\${libdir} -lhosp")
+set(PKG_CONFIG_LIBS_PRIVATE "")
 configure_file(
   ${CMAKE_CURRENT_SOURCE_DIR}/pkgconfig.in
   ${CMAKE_CURRENT_BINARY_DIR}/hosp.pc
+  @ONLY
 )
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/hosp.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
 
