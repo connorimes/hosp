@@ -150,9 +150,9 @@ static void hosp_str_units_to_milliunits(const char* str, size_t len, unsigned i
       // device is off
       *val = 0;
     } else {
-      *val = 1000 * atoi(str);
+      *val = 1000 * (unsigned int) atoi(str);
       for (s = 1; s < len && str[s - 1] != '.'; s++);
-      *val += atoi(&str[s]);
+      *val += (unsigned int) atoi(&str[s]);
     }
   }
 }
