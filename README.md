@@ -33,6 +33,8 @@ cmake --build .
 ```
 
 To build a shared object library (instead of a static library), add `-DBUILD_SHARED_LIBS=On` to the first cmake command.
+Add `-DCMAKE_BUILD_TYPE=Release` for an optimized build.
+Refer to CMake documentation for more a complete description of build options.
 
 
 ## Installing
