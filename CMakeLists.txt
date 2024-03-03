@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.6)
+cmake_minimum_required(VERSION 3.7)
 
 project(hosp VERSION 0.2.0
              LANGUAGES C)

@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- CMake: Increase minimum required version to 3.6.
+- CMake: Increase minimum required version to 3.7.
 - README: update documentation.
 - CI: Switch from Travis CI to GitHub workflows for continuous integration.
 
