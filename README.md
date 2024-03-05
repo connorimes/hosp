@@ -7,17 +7,18 @@ A library and tools for managing an [ODROID Smart Power](https://wiki.odroid.com
 
 You need an ODROID Smart Power device with a USB connection.
 
-You will also need [CMake](https://cmake.org/) and a [hidapi](https://github.com/libusb/hidapi) library.
+You will also need [CMake](https://cmake.org/), [pkg-config](https://www.freedesktop.org/wiki/Software/pkg-config/), and a [HIDAPI](https://github.com/libusb/hidapi) library.
+
 On Debian-based Linux systems (including Ubuntu):
 
 ```sh
-sudo apt install cmake libhidapi-dev
+sudo apt install cmake libhidapi-dev pkg-config
 ```
 
-On macOS:
+On macOS, using [Homebrew](https://brew.sh/):
 
 ```sh
-brew install cmake hidapi
+brew install cmake hidapi pkg-config
 ```
 
 
@@ -35,6 +36,14 @@ cmake --build .
 To build a shared object library (instead of a static library), add `-DBUILD_SHARED_LIBS=On` to the first cmake command.
 Add `-DCMAKE_BUILD_TYPE=Release` for an optimized build.
 Refer to CMake documentation for more a complete description of build options.
+
+The build uses pkg-config to search for a supported HIDAPI library.
+By default, it first searches for libraries using native OS backends (e.g., `hidraw` for Linux, `IOHIDManager` for macOS), then searches for the `libusb` backend (for Linux, macOS, BSD, and other UNIX-like systems).
+To change the default search order, set the `HOSP_HIDAPI_PC_MODULES` variable with a ;-delimited list of pkg-config module name(s), e.g., to prioritize `libusb`:
+
+```sh
+cmake .. -DHOSP_HIDAPI_PC_MODULES="hidapi-libusb;hidapi;hidapi-hidraw"
+```
 
 
 ## Installing
