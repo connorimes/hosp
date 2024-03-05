@@ -11,8 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Build:
-  - Increase minimum required cmake version to 3.16.
+  - Increase minimum required CMake version to 3.16.
   - Prefer native HIDAPI backends over `libusb` backend.
+  - Add `HOSP_HIDAPI_PC_MODULES` CMake option to let user configure the HIDAPI module search order.
 - README: update documentation.
 - CI: Switch from Travis CI to GitHub workflows for continuous integration.
 
