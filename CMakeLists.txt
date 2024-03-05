@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.7)
+cmake_minimum_required(VERSION 3.16)
 
 project(hosp VERSION 0.2.0
              LANGUAGES C)
@@ -13,31 +13,17 @@ include(GNUInstallDirs)
 
 # Dependencies
 
-find_package(PkgConfig REQUIRED)
-# Check for impl with libusb backend first
-# hidapi docs only specify it for Linux and FreeBSD, but libusb is quite portable
-set(HIDAPI_IMPL hidapi-libusb)
-pkg_search_module(HIDAPI IMPORTED_TARGET ${HIDAPI_IMPL})
-if(NOT HIDAPI_FOUND)
-  # Now look for more platform-specific implementations
-  if(${CMAKE_SYSTEM_NAME} MATCHES "Linux|Android")
-    # Check for impl with hidraw backend
-    set(HIDAPI_IMPL hidapi-hidraw)
-    pkg_search_module(HIDAPI IMPORTED_TARGET ${HIDAPI_IMPL})
-  elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    # Check for impl with IOHidManager backend
-    set(HIDAPI_IMPL hidapi)
-    pkg_search_module(HIDAPI IMPORTED_TARGET ${HIDAPI_IMPL})
-  elseif(WIN32)
-    # Check for impl with dll backend (hidapi.dll)
-    set(HIDAPI_IMPL hidapi)
-    pkg_search_module(HIDAPI IMPORTED_TARGET ${HIDAPI_IMPL})
-  endif()
-endif()
-if(NOT HIDAPI_FOUND)
-  message(FATAL_ERROR "Could not find dependency: hidapi")
-endif()
+# "hidapi" is used for both macOS (IOHidManager) and Windows (DLL) backends.
+# "hidapi-hidraw" is for Linux.
+# "hidapi-libusb" is for Linux, BSD, and other UNIX-like systems.
+set(HOSP_HIDAPI_PC_MODULES_DEFAULT hidapi hidapi-hidraw hidapi-libusb)
+set(HOSP_HIDAPI_PC_MODULES ${HOSP_HIDAPI_PC_MODULES_DEFAULT} CACHE STRING
+    ";-list of HIDAPI pkg-config modules to search for, e.g., an ordered subset of: ${HOSP_HIDAPI_PC_MODULES_DEFAULT}")
+mark_as_advanced(HOSP_HIDAPI_PC_MODULES)
 
+find_package(PkgConfig REQUIRED)
+pkg_search_module(HIDAPI REQUIRED IMPORTED_TARGET ${HOSP_HIDAPI_PC_MODULES})
+message(STATUS "Using HIDAPI module: ${HIDAPI_MODULE_NAME}")
 
 # Libraries
 
@@ -78,7 +64,7 @@ endif()
 set(PKG_CONFIG_NAME "hosp")
 set(PKG_CONFIG_DESCRIPTION "Library for managing an ODROID Smart Power")
 set(PKG_CONFIG_REQUIRES "")
-set(PKG_CONFIG_REQUIRES_PRIVATE "${HIDAPI_IMPL}")
+set(PKG_CONFIG_REQUIRES_PRIVATE "${HIDAPI_MODULE_NAME}")
 set(PKG_CONFIG_CFLAGS "-I\${includedir}")
 set(PKG_CONFIG_LIBS "-L\${libdir} -lhosp")
 set(PKG_CONFIG_LIBS_PRIVATE "")
