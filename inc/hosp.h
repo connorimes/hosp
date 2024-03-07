@@ -1,6 +1,12 @@
 /**
- * A library for managing a Hardkernel ODROID Smart Power device.
+ * A library for managing a Hardkernel ODROID Smart Power (HOSP) device.
  * These devices refresh at 10 Hz (every 100 ms).
+ *
+ * HOSP devices use a commercial off-the-shelf Microchip Technology Inc. PIC18F45K50 USB Flash MCU.
+ * The library uses this MCU's Vendor ID and Product ID (defined below) to optimistically identify HOSP devices.
+ * Unfortunately, HOSP devices don't report serial numbers to enable unique device identification.
+ * If multiple HID devices with this MCU are connected to the system, the user is responsible for differentiating
+ * between them, e.g., by opening the HID device themselves using hid_open_path() rather than relying on hosp_open().
  *
  * Function hosp_device pointer parameters may never be NULL.
  * Pointers for storing values on read are optional in situations where a user may not care about all fields.
@@ -22,11 +28,24 @@ extern "C" {
 #endif
 
 #include <stddef.h>
+#include <hidapi.h>
+
+#define HOSP_VENDOR_ID 0x04d8
+#define HOSP_PRODUCT_ID 0x003f
 
 /**
  * Opaque HOSP handle.
  */
 typedef struct hosp_device hosp_device;
+
+/**
+ * A wrapper around hid_enumerate() to get only HOSP HID devices.
+ * This is likely only needed if the user must disambiguate between multiple HOSP devices connected to the system.
+ * The user is responsible for calling hid_free_enumeration() when finished with the result.
+ *
+ * @return The struct hid_device_info* result from hid_enumerate(), or NULL on failure (sets errno)
+ */
+struct hid_device_info* hosp_enumerate(void);
 
 /**
  * Open a HOSP handle.
@@ -37,12 +56,32 @@ typedef struct hosp_device hosp_device;
 hosp_device* hosp_open(void);
 
 /**
+ * Open a HOSP handle, optionally using an open HID device.
+ *
+ * If a HID device is provided, it must be open for the lifetime of the HOSP handle.
+ *
+ * @param dev An optional HID device returned from hid_open(); if NULL, the first HOSP device discovered will be used
+ * @return A hosp_device handle, or NULL on failure (sets errno)
+ */
+hosp_device* hosp_open_device(hid_device* dev);
+
+/**
  * Close a HOSP handle.
+ *
+ * If the user provided the HID device to hosp_open_device(), they are responsible for closing it after hosp_close().
  *
  * @param hosp An open device handle, not NULL
  * @return 0 on success, a negative value on failure (sets errno)
  */
 int hosp_close(hosp_device* hosp);
+
+/**
+ * Get the underlying HID device.
+ *
+ * @param hosp An open device handle, not NULL
+ * @return The hid_device pointer
+ */
+hid_device* hosp_get_device(hosp_device* hosp);
 
 /**
  * Write to the device to request the firmware version string.

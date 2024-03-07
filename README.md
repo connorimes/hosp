@@ -104,6 +104,9 @@ For the new permissions to take effect, the device must be remounted by the kern
 
 ## Usage
 
+The user is responsible for initializing and finalizing the HIDAPI library using `hid_init()` and `hid_exit()`.
+The following example skips those for brevity.
+
 ```C
   // get the handle
   hosp_device* hosp = hosp_open();

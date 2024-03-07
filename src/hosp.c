@@ -5,15 +5,13 @@
  * @date 2018-05-22
  */
 #include <errno.h>
-#include <hidapi.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <hidapi.h>
 #include <hosp.h>
 
 #define HOSP_BUF_SIZE            65
-#define HOSP_VENDOR_ID           0x04d8
-#define HOSP_PRODUCT_ID          0x003f
 #define HOSP_REQUEST_DATA        0x37
 #define HOSP_REQUEST_STARTSTOP   0x80
 #define HOSP_REQUEST_STATUS      0x81
@@ -30,6 +28,7 @@
 struct hosp_device {
   hid_device* dev;
   unsigned char buf[HOSP_BUF_SIZE];
+  int is_own_dev;
 };
 
 // Returns 0 on success, -errno on failure
@@ -68,19 +67,37 @@ static int hosp_read(hosp_device* hosp, unsigned char type) {
   return hosp->buf[0] != type;
 }
 
+struct hid_device_info* hosp_enumerate(void) {
+  errno = 0;
+  struct hid_device_info* dev_info = hid_enumerate(HOSP_VENDOR_ID, HOSP_PRODUCT_ID);
+  if (dev_info == NULL && !errno) {
+    errno = EIO;
+  }
+  return dev_info;
+}
+
 hosp_device* hosp_open(void) {
-  int err_save;
+  return hosp_open_device(NULL);
+}
+
+hosp_device* hosp_open_device(hid_device* dev) {
   hosp_device* hosp;
+  int err_save;
   if ((hosp = calloc(1, sizeof(hosp_device))) == NULL) {
     return NULL;
   }
-  // get the HID device handle
-  if ((hosp->dev = hid_open(HOSP_VENDOR_ID, HOSP_PRODUCT_ID, NULL)) == NULL) {
-    if (!errno) {
-      errno = EIO;
+  if (dev == NULL) {
+    hosp->is_own_dev = 1;
+    // get the HID device handle
+    if ((hosp->dev = hid_open(HOSP_VENDOR_ID, HOSP_PRODUCT_ID, NULL)) == NULL) {
+      if (!errno) {
+        errno = EIO;
+      }
+      free(hosp);
+      return NULL;
     }
-    free(hosp);
-    return NULL;
+  } else {
+    hosp->dev = dev;
   }
   // set nonblocking
   if (hid_set_nonblocking(hosp->dev, 1)) {
@@ -96,11 +113,17 @@ hosp_device* hosp_open(void) {
 }
 
 int hosp_close(hosp_device* hosp) {
-  // close the HID device handle
   errno = 0;
-  hid_close(hosp->dev);
+  if (hosp->is_own_dev) {
+    // close the HID device handle
+    hid_close(hosp->dev);
+  }
   free(hosp);
   return -errno;
+}
+
+hid_device* hosp_get_device(hosp_device* hosp) {
+  return hosp->dev;
 }
 
 int hosp_request_version_write(hosp_device* hosp) {

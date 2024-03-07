@@ -7,6 +7,7 @@
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <hidapi.h>
 #include <hosp.h>
 #include "util.h"
 
@@ -21,8 +22,14 @@ int main(void) {
   unsigned int mW;
   unsigned int mWh;
 
+  if (hid_init() < 0) {
+    fprintf(stderr, "hid_init: %ls\n", hid_error(NULL));
+    return 1;
+  }
+
   if ((hosp = hosp_open()) == NULL) {
     perror("Failed to open ODROID Smart Power connection");
+    hid_exit();
     return errno;
   }
 
@@ -42,5 +49,6 @@ int main(void) {
     perror("Failed to close ODROID Smart Power connection");
   }
 
+  hid_exit();
   return ret;
 }
