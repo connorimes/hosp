@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - hosp_enumerate: function to wrap `hid_enumerate`.
 - hosp_open_device: function to open using an existing `hid_device`.
 - hosp_get_device: function to get the underlying `hid_device` handle.
+- hosp-enumerate: new executable to find and print ODROID Smart Power device paths.
 
 ### Changed
 

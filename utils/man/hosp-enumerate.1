@@ -1,0 +1,32 @@
+.TH "hosp-enumerate" "1" "2024-03-07" "hosp" "ODROID Smart Power Utilities"
+.SH "NAME"
+.LP
+hosp\-enumerate \- find and print ODROID Smart Power device paths
+.SH "SYNPOSIS"
+.LP
+\fBhosp\-enumerate\fP
+.SH "DESCRIPTION"
+.LP
+Find and print ODROID Smart Power device paths.
+.LP
+Hardkernel ODROID Smart Power devices use a commercial off-the-shelf
+Microchip Technology Inc. PIC18F45K50 USB Flash MCU.
+This application prints device paths for all HID devices connected to the
+system with this MCU.
+If multiple HID devices with this MCU are connected, the user is responsible
+for differentiating between them.
+.SH "OPTIONS"
+.LP
+.TP
+\fB\-h\fP, \fB\-\-help\fP
+Prints the help screen.
+.SH "EXAMPLES"
+.TP
+\fBhosp\-enumerate\fP
+Print all device paths.
+.SH "BUGS"
+.LP
+Report bugs upstream at <https://github.com/energymon/hosp>
+.SH "SEE ALSO"
+.LP
+\fBhosp\-get\fP(1), \fBhosp\-set\fP(1), \fBhosp\-poll\fP(1)

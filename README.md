@@ -155,6 +155,7 @@ The following example skips those for brevity.
 The following command-line utilities are also included.
 See their man pages for further usage instructions and examples.
 
+* `hosp-enumerate`: Find and print ODROID Smart Power device paths
 * `hosp-get`: Get information from an ODROID Smart Power
 * `hosp-poll`: Poll an ODROID Smart Power at regular intervals
 * `hosp-set`: Set an ODROID Smart Power ON/OFF and START/STOP status
