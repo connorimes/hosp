@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - HIDAPI is now a public dependency (was private).
+- hosp_open: don't automatically enable nonblocking on the `hid_device` (now the user's responsibility if they want it).
 - Build:
   - Increase minimum required CMake version to 3.16.
   - Prefer native HIDAPI backends over `libusb` backend.

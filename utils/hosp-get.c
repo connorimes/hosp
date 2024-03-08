@@ -82,6 +82,11 @@ int main(int argc, char** argv) {
     goto close_hdev;
   }
 
+  if (hid_set_nonblocking(hosp_get_device(hosp), 1) < 0) {
+    // Not a fatal error.
+    fprintf(stderr, "hid_set_nonblocking: %ls\n", hid_error(hosp_get_device(hosp)));
+  }
+
   if (hosp_util_get_version(hosp, version, sizeof(version)) ||
       hosp_util_get_status(hosp, &is_on, &is_started) ||
       hosp_util_get_data(hosp, &mV, &mA, &mW, &mWh)) {

@@ -82,7 +82,6 @@ hosp_device* hosp_open(void) {
 
 hosp_device* hosp_open_device(hid_device* dev) {
   hosp_device* hosp;
-  int err_save;
   if ((hosp = calloc(1, sizeof(hosp_device))) == NULL) {
     return NULL;
   }
@@ -98,16 +97,6 @@ hosp_device* hosp_open_device(hid_device* dev) {
     }
   } else {
     hosp->dev = dev;
-  }
-  // set nonblocking
-  if (hid_set_nonblocking(hosp->dev, 1)) {
-    if (!errno) {
-      errno = EIO;
-    }
-    err_save = errno;
-    hosp_close(hosp);
-    errno = err_save;
-    return NULL;
   }
   return hosp;
 }
