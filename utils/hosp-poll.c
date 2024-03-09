@@ -19,14 +19,16 @@
   #define HOSP_MAX_FAILURES 10
 #endif
 
+static const char* path = NULL;
 static volatile int running = 1;
 static int restart = 0;
 static int count = 0;
 static unsigned long interval_ms = HOSP_DEFAULT_INTERVAL_MS;
 
-static const char short_options[] = "hrc:i:";
+static const char short_options[] = "hp:rc:i:";
 static const struct option long_options[] = {
   {"help",      no_argument,       NULL, 'h'},
+  {"path",      required_argument, NULL, 'p'},
   {"restart",   no_argument,       NULL, 'r'},
   {"count",     required_argument, NULL, 'c'},
   {"interval",  required_argument, NULL, 'i'},
@@ -39,6 +41,7 @@ static void print_usage(int exit_code) {
           "Usage: hosp-poll [OPTION]...\n"
           "Options:\n"
           "  -h, --help               Print this message and exit\n"
+          "  -p, --path               Device path (defaults to the first Smart Power found)\n"
           "  -r, --restart            Restart the Watt-hour counter before polling\n"
           "  -c, --count=N            Stop after N reads\n"
           "  -i, --interval=MS        The polling interval in milliseconds (default=%u)\n",
@@ -52,6 +55,9 @@ static void parse_args(int argc, char** argv) {
     switch (c) {
       case 'h':
         print_usage(0);
+        break;
+      case 'p':
+        path = optarg;
         break;
       case 'r':
         restart = 1;
@@ -162,6 +168,7 @@ static int hosp_poll(hosp_device* hosp) {
 }
 
 int main(int argc, char** argv) {
+  hid_device* hdev = NULL;
   hosp_device* hosp;
   int ret;
 
@@ -173,10 +180,18 @@ int main(int argc, char** argv) {
     return 1;
   }
 
-  if ((hosp = hosp_open()) == NULL) {
+  if (path != NULL) {
+    if ((hdev = hid_open_path(path)) == NULL) {
+      fprintf(stderr, "%ls\n", hid_error(NULL));
+      ret = 1;
+      goto exit_hid;
+    }
+  }
+
+  if ((hosp = hosp_open_device(hdev)) == NULL) {
     perror("Failed to open ODROID Smart Power connection");
-    hid_exit();
-    return errno;
+    ret = errno;
+    goto close_hdev;
   }
 
   if (!restart || !(ret = hosp_restart(hosp))) {
@@ -188,6 +203,12 @@ int main(int argc, char** argv) {
     perror("Failed to close ODROID Smart Power connection");
   }
 
+close_hdev:
+  if (hdev != NULL) {
+    hid_close(hdev);
+  }
+
+exit_hid:
   hid_exit();
   return ret;
 }

@@ -5,13 +5,52 @@
  * @date 2018-05-22
  */
 #include <errno.h>
+#include <getopt.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <hidapi.h>
 #include <hosp.h>
 #include "util.h"
 
-int main(void) {
+static const char* path = NULL;
+
+static const char short_options[] = "hp:";
+static const struct option long_options[] = {
+  {"help",      no_argument,       NULL, 'h'},
+  {"path",      required_argument, NULL, 'p'},
+  {0, 0, 0, 0}
+};
+
+__attribute__ ((noreturn))
+static void print_usage(int exit_code) {
+  fprintf(exit_code ? stderr : stdout,
+          "Usage: hosp-get [OPTION]...\n"
+          "Options:\n"
+          "  -h, --help               Print this message and exit\n"
+          "  -p, --path               Device path (defaults to the first Smart Power found)\n");
+  exit(exit_code);
+}
+
+static void parse_args(int argc, char** argv) {
+  int c;
+  while ((c = getopt_long(argc, argv, short_options, long_options, NULL)) != -1) {
+    switch (c) {
+      case 'h':
+        print_usage(0);
+        break;
+      case 'p':
+        path = optarg;
+        break;
+      case '?':
+      default:
+        print_usage(EINVAL);
+        break;
+    }
+  }
+}
+
+int main(int argc, char** argv) {
+  hid_device* hdev = NULL;
   hosp_device* hosp;
   int ret = 0;
   char version[17];
@@ -22,15 +61,25 @@ int main(void) {
   unsigned int mW;
   unsigned int mWh;
 
+  parse_args(argc, argv);
+
   if (hid_init() < 0) {
     fprintf(stderr, "hid_init: %ls\n", hid_error(NULL));
     return 1;
   }
 
-  if ((hosp = hosp_open()) == NULL) {
+  if (path != NULL) {
+    if ((hdev = hid_open_path(path)) == NULL) {
+      fprintf(stderr, "%ls\n", hid_error(NULL));
+      ret = 1;
+      goto exit_hid;
+    }
+  }
+
+  if ((hosp = hosp_open_device(hdev)) == NULL) {
     perror("Failed to open ODROID Smart Power connection");
-    hid_exit();
-    return errno;
+    ret = errno;
+    goto close_hdev;
   }
 
   if (hosp_util_get_version(hosp, version, sizeof(version)) ||
@@ -49,6 +98,12 @@ int main(void) {
     perror("Failed to close ODROID Smart Power connection");
   }
 
+close_hdev:
+  if (hdev != NULL) {
+    hid_close(hdev);
+  }
+
+exit_hid:
   hid_exit();
   return ret;
 }

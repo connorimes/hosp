@@ -1,4 +1,4 @@
-.TH "hosp-set" "1" "2018-05-22" "hosp" "ODROID Smart Power Utilities"
+.TH "hosp-set" "1" "2024-03-08" "hosp" "ODROID Smart Power Utilities"
 .SH "NAME"
 .LP
 hosp\-set \- set an ODROID Smart Power ON/OFF and START/STOP status
@@ -26,6 +26,9 @@ Requesting to start the device meters while in an off state has no effect.
 \fB\-h\fP, \fB\-\-help\fP
 Prints the help screen.
 .TP
+\fB\-p\fP, \fB\-\-path\fP
+Device path (defaults to the first Smart Power found).
+.TP
 \fB\-o\fP, \fB\-\-onoff=0|1\fP
 Turn the device ON (1) or OFF (0)
 .TP
@@ -35,6 +38,9 @@ START (1) or STOP (0) the device meters
 .TP
 \fBhosp\-set \-o 1\fP
 Turn the device on if not already turned on.
+.TP
+\fBhosp\-set \-p /dev/hidraw1 \-o 1\fP
+Turn the device /dev/hidraw1 on if not already turned on.
 .TP
 \fBhosp\-set \-o 0\fP
 Turn the device off if not already turned off.
@@ -55,4 +61,4 @@ Turn the device on if not already on and stop/pause the meters if already starte
 Report bugs upstream at <https://github.com/energymon/hosp>
 .SH "SEE ALSO"
 .LP
-\fBhosp\-get\fP(1), \fBhosp\-poll\fP(1)
+\fBhosp\-enumerate\fP(1), \fBhosp\-get\fP(1), \fBhosp\-poll\fP(1)
