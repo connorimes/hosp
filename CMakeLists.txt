@@ -38,8 +38,12 @@ if(BUILD_SHARED_LIBS)
                                         SOVERSION ${PROJECT_VERSION_MAJOR})
 endif()
 install(TARGETS hosp LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+                             COMPONENT HOSP_Runtime
+                             NAMELINK_COMPONENT HOSP_Development
                      ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-                     PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/hosp)
+                             COMPONENT HOSP_Development
+                     PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/hosp
+                                   COMPONENT HOSP_Development)
 
 
 # Utilities
@@ -73,7 +77,9 @@ configure_file(
   ${CMAKE_CURRENT_BINARY_DIR}/hosp.pc
   @ONLY
 )
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/hosp.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/hosp.pc
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
+        COMPONENT HOSP_Development)
 
 
 # Uninstall

@@ -16,5 +16,8 @@ install(TARGETS hosp-get
                 hosp-set
                 hosp-poll
                 hosp-enumerate
-        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
-install(DIRECTORY man/ DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+                COMPONENT HOSP_Utils_Runtime)
+install(DIRECTORY man/
+        DESTINATION ${CMAKE_INSTALL_MANDIR}/man1
+        COMPONENT HOSP_Utils_Runtime)
