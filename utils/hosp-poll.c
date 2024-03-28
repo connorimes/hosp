@@ -38,6 +38,7 @@ static const struct option long_options[] = {
 __attribute__ ((noreturn))
 static void print_usage(int exit_code) {
   fprintf(exit_code ? stderr : stdout,
+          "Poll an ODROID Smart Power at regular intervals and print the results in CSV format.\n\n"
           "Usage: hosp-poll [OPTION]...\n"
           "Options:\n"
           "  -h, --help               Print this message and exit\n"
