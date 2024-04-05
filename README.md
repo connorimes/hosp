@@ -2,6 +2,10 @@
 
 A library and tools for managing an [ODROID Smart Power](https://wiki.odroid.com/old_product/accessory/odroidsmartpower) device.
 
+> NOTE: If you're using a newer generation [ODROID Smart Power 3](https://wiki.odroid.com/accessory/power_supply_battery/smartpower3) device, see the [hosp](https://github.com/energymon/hosp) project instead.
+
+This project is tested with firmware version "SMART POWER V3.0".
+
 
 ## Prerequisites
 
