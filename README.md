@@ -96,7 +96,7 @@ Depending on whether you are using the `libusb` or `hidraw` implementations of `
 SUBSYSTEM=="usb", ATTRS{idVendor}=="04d8", ATTRS{idProduct}=="003f", GROUP="plugdev"
 
 # ODROID Smart Power - HIDAPI/hidraw
-KERNEL=="hidraw*", ATTRS{busnum}=="1", ATTRS{idVendor}=="04d8", ATTRS{idProduct}=="003f", GROUP="plugdev"
+KERNEL=="hidraw*", ATTRS{idVendor}=="04d8", ATTRS{idProduct}=="003f", GROUP="plugdev"
 ```
 
 For the new permissions to take effect, the device must be remounted by the kernel - either disconnect and reconnect the device or reboot the system.
