@@ -10,16 +10,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- hosp_enumerate: function to wrap `hid_enumerate`.
-- hosp_open_device: function to open using an existing `hid_device`.
-- hosp_get_device: function to get the underlying `hid_device` handle.
-- hosp-enumerate: new executable to find and print ODROID Smart Power device paths.
-- hosp-{get,poll,set}: `-p`/`--path` CLI argument.
+- Functions:
+  - hosp_enumerate: new function to wrap `hid_enumerate`.
+  - hosp_open_device: new function to open using an existing `hid_device`.
+  - hosp_get_device: new function to get the underlying `hid_device` handle.
+- Utilities:
+  - hosp-enumerate: new executable to find and print ODROID Smart Power device paths.
+  - hosp-{get,poll,set}: add `-p`/`--path` CLI argument.
 
 ### Changed
 
 - HIDAPI is now a public dependency (was private).
-- hosp_open: don't automatically enable nonblocking on the `hid_device` (now the user's responsibility if they want it).
+- Functions:
+  - hosp_open: don't automatically enable nonblocking on the `hid_device` (now the user's responsibility if they want it).
+- Utilities:
+  - hosp-poll: flush output at line boundaries to improve streaming/piping performance.
 - Build:
   - Increase minimum required CMake version to 3.16.
   - Prefer native HIDAPI backends over `libusb` backend.
@@ -29,9 +34,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- hosp_request_version_read: stringop-truncation warning with gcc >= 8.
-- hosp-{poll,set}: missing-noreturn warning for `print_usage` functions.
-- pkg-config: pc file is broken when CMAKE_INSTALL_{INCLUDE,LIB}DIR is absolute.
+- Functions:
+  - hosp_request_version_read: stringop-truncation warning with gcc >= 8.
+- Utilities:
+  - hosp-{poll,set}: missing-noreturn warning for `print_usage` functions.
+- Build:
+  - pkg-config: pc file is broken when CMAKE_INSTALL_{INCLUDE,LIB}DIR is absolute.
 
 
 ## v0.1.0 - 2018-05-31
